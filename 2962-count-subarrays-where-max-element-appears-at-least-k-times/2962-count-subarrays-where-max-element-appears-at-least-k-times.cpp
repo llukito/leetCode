@@ -6,7 +6,7 @@ public:
         int maxValue = *max_element(nums.begin(), nums.end());
         int freq = 0;
         bool b = true;
-        while(right<nums.size() && left<nums.size()){
+        while(right<nums.size() && left<=right+1){
             if(nums[right]==maxValue && b){
                 freq++;
             }
