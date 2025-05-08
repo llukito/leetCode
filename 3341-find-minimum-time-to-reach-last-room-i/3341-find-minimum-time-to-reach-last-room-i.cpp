@@ -19,6 +19,7 @@ public:
                 int nY = y + vect[1];
                 if(nX >=0 && nY >=0 && nX<r && nY < c){
                     int newTime = max(time + 1, moveTime[nX][nY]+1);
+                    //  pq.push(make_tuple(newTime, nX, nY));
                     if(newTime < visited[nX][nY]){
                         visited[nX][nY] = newTime;
                         pq.push(make_tuple(newTime, nX, nY));
