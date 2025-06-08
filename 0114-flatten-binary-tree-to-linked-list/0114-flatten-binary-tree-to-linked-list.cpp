@@ -1,24 +1,43 @@
 class Solution {
 public:
     void flatten(TreeNode* root) {
-        if (!root) return;
+        if(!root)return;
+        TreeNode* head = nullptr;
+        TreeNode* tail = nullptr;
+        fill(root->left, head, tail);
+        root->left = nullptr;
+        TreeNode* temp = root->right;
+        root->right = head; 
 
-        vector<TreeNode*> nodes;
-        preorder(root, nodes);
-
-        for (int i = 0; i < nodes.size() - 1; ++i) {
-            nodes[i]->left = nullptr;
-            nodes[i]->right = nodes[i + 1];
+        TreeNode* head2 = nullptr;
+        TreeNode* tail2 = nullptr;
+        fill(temp, head2, tail2);
+        if(tail){
+            tail->right = head2; 
+        } else {
+            root->right = head2;
         }
-        nodes.back()->left = nullptr;
-        nodes.back()->right = nullptr;
+    }
+    
+    void fill(TreeNode* root, TreeNode*& head, TreeNode*& tail) {
+        if (!root) return;
+        TreeNode* nd = new TreeNode();
+        nd->val = root->val; nd->left = nullptr; nd->right = nullptr;
+        if(!head){
+            head = nd;
+            tail = nd;
+        } else {
+            tail->right = nd;
+            tail = nd;
+        }
+        fill(root->left, head, tail);
+        fill(root->right, head, tail);
     }
 
-    void preorder(TreeNode* node, vector<TreeNode*>& nodes) {
-        if (!node) return;
-
-        nodes.push_back(node);
-        preorder(node->left, nodes);
-        preorder(node->right, nodes);
+    void freeTree(TreeNode*& root){
+        if(!root)return;
+        freeTree(root->left);
+        freeTree(root->right);
+        delete root;
     }
 };
