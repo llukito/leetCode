@@ -12,29 +12,30 @@
 class Solution {
 public:
     vector<int> findFrequentTreeSum(TreeNode* root) {
-        map<int, int> mp;
-        int freq = 0;
-        fill(mp, root, freq);
-        vector<int> res;
-        for(auto& entry : mp){
-            if(entry.second == freq){
-                res.push_back(entry.first);
+        unordered_map<int, int> map;
+        int maxFreq = 0;
+        fill(map, root, maxFreq);
+        vector<int> result;
+        for(auto& entry : map){
+            if(entry.second == maxFreq){
+                result.push_back(entry.first);
             }
         }
-        return res;
+        return result;
     }
 
-    void fill(map<int, int>& mp,TreeNode* root, int& freq){
+    void fill(unordered_map<int,int>& map, TreeNode* root, int& maxFreq){
         if(!root)return;
-        int s = sum(root);
-        mp[s]++;
-        freq = max(freq, mp[s]);
-        fill(mp, root->left, freq);
-        fill(mp, root->right, freq);
+        int curr = getSum(root);
+        map[curr]++;
+        maxFreq = max(maxFreq, map[curr]);
+        fill(map, root->left, maxFreq);
+        fill(map, root->right, maxFreq);
     }
 
-    int sum(TreeNode* root){
+    int getSum(TreeNode* root){
         if(!root)return 0;
-        return root->val + sum(root->left)+sum(root->right);
+        return root->val + getSum(root->left)+getSum(root->right);
     }
+
 };
