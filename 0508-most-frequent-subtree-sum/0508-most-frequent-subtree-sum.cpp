@@ -1,41 +1,25 @@
-/**
- * Definition for a binary tree node.
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
- *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
- * };
- */
 class Solution {
 public:
+    int dfs(TreeNode* root, vector<int>& v) {
+        if (root == nullptr) return 0;
+        int sum = root->val + dfs(root->left, v) + dfs(root->right, v);
+        v.push_back(sum);
+        return sum;
+    }
     vector<int> findFrequentTreeSum(TreeNode* root) {
-        unordered_map<int, int> map;
-        int maxFreq = 0;
-        fill(map, root, maxFreq);
-        vector<int> result;
-        for(auto& entry : map){
-            if(entry.second == maxFreq){
-                result.push_back(entry.first);
-            }
+        vector<int> v;
+        if (!root) return v;
+        dfs(root, v);
+        map<int,int> mp;
+        for (int i=0;i<v.size();i++) mp[v[i]]++;
+        int cnt = 0;
+        for (int i=0;i<v.size();i++) cnt = max(cnt, mp[v[i]]);
+        set<int> res;
+        for (int i=0;i<v.size();i++){
+            if (mp[v[i]] == cnt) res.insert(v[i]);
         }
-        return result;
+        vector<int> ans;
+        for (int x : res) ans.push_back(x);
+        return ans;
     }
-
-    void fill(unordered_map<int,int>& map, TreeNode* root, int& maxFreq){
-        if(!root)return;
-        int curr = getSum(root);
-        map[curr]++;
-        maxFreq = max(maxFreq, map[curr]);
-        fill(map, root->left, maxFreq);
-        fill(map, root->right, maxFreq);
-    }
-
-    int getSum(TreeNode* root){
-        if(!root)return 0;
-        return root->val + getSum(root->left)+getSum(root->right);
-    }
-
 };
