@@ -19,13 +19,18 @@ public:
     }
 
     void dfs(int i, unordered_map<int, vector<int>>& graph, unordered_set<int>& visited, int& edges, int& nodes){
-        if(!visited.count(i)){
-            visited.insert(i);
-            nodes++;
-            edges+=graph[i].size();
-            for(int n : graph[i]){
-                if(!visited.count(n)){
-                    dfs(n, graph, visited, edges, nodes);
+        stack<int> st;
+        st.push(i);
+        while(!st.empty()){
+            int num = st.top(); st.pop();
+            if(!visited.count(num)){
+                nodes++;
+                edges+=graph[num].size();
+                visited.insert(num);
+                for(int n : graph[num]){
+                    if(!visited.count(n)){
+                        st.push(n);
+                    }
                 }
             }
         }
