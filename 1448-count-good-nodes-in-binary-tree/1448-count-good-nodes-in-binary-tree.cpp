@@ -11,18 +11,19 @@
  */
 class Solution {
 public:
-    int goodNodes(TreeNode* root) {
-        int num = 0;
-        check(root, num, root->val);
-        return num;
+    void check(int& res, TreeNode* root, int maxValue) {
+        if (!root)return;
+        if (root->val >= maxValue) {
+            res++;
+            maxValue = root->val;
+        }
+        check(res, root->left, maxValue);
+        check(res, root->right, maxValue);
     }
 
-    void check(TreeNode* root, int& num, int edge){
-        if(!root)return;
-        if(root->val >= edge){
-            num++;
-        }
-        check(root->left, num, max(edge, root->val));
-        check(root->right, num, max(edge, root->val));
+    int goodNodes(TreeNode* root) {
+        int res = 0;
+        check(res, root, INT_MIN);
+        return res;
     }
 };
