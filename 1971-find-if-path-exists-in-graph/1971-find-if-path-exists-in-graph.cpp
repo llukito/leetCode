@@ -15,7 +15,7 @@ public:
 
     int find(int n, map<int, int>& parents){
         if(parents[n]!=n){
-            parents[n] = find(parents[n], parents);
+            return find(parents[n], parents);
         }
         return parents[n];
     }
