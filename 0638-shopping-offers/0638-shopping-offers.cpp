@@ -1,29 +1,23 @@
 class Solution {
 public:
     int shoppingOffers(vector<int>& price, vector<vector<int>>& special, vector<int>& needs) {
-        int result = INT_MAX;
-        check(price, special, needs, result, 0);
-        return result;
+        unordered_map<string,int> mp;
+        return check(price, special, needs, mp);
     }
 
-    void check(vector<int>& price, vector<vector<int>>& special, vector<int>& needs, int& result, int curr){
-        if(curr>result){
-            return;
-        }
-        int ch = see(needs);
-        if(ch == -1){
-            return;
+    int check(vector<int>& price, vector<vector<int>>& special, vector<int>& needs, unordered_map<string,int>& mp){
+        pair<int,string> pr = see(needs);
+        int ch = pr.first;
+        string str = pr.second;
+        if(mp.contains(str)){
+            return mp[str];
         }
         if(ch == 0){
-            result = min(result, curr);
-            return;
+            return 0;
         }
+        int count = 0;
         for(int i=0; i<price.size(); i++){
-            if(needs[i]>0){
-                needs[i]--;
-                check(price, special, needs, result, curr+price[i]);
-                needs[i]++;
-            }
+            count+=price[i]*needs[i];
         }
         for(int i=0; i<special.size(); i++){
             vector<int> vect = special[i];
@@ -38,23 +32,24 @@ public:
                 for(int i=0; i<vect.size()-1; i++){
                     needs[i]-=vect[i];
                 }
-                check(price, special, needs, result, curr+vect.back());
+                count = min(count, vect.back() + check(price, special, needs, mp));
                 for(int i=0; i<vect.size()-1; i++){
                     needs[i]+=vect[i];
                 }
             }
         }
+        return mp[str] = count;
     }
 
-    int see(vector<int>& needs){
+    pair<int,string> see(vector<int>& needs){
+        string str;
         bool zeros = true;
         for(int n : needs){
-            if(n<0){
-                return -1;
-            } else if(n!=0){
+            str+=to_string(n);
+            if(n!=0){
                 zeros = false;
             }
         }
-        return zeros ? 0 : 1;
+        return zeros ? make_pair(0,str) : make_pair(1,str);
     }
 };
