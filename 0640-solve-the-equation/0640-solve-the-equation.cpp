@@ -28,9 +28,9 @@ public:
     }
 
 private:
-    // Split "ax+b=cx+d" → {"ax+b", "cx+d"}
-    static pair<string, string> splitEquation(const string& eq) {
-        size_t pos = eq.find('=');
+
+    pair<string, string> splitEquation(string eq) {
+        int pos = eq.find('=');
         return { eq.substr(0, pos), eq.substr(pos + 1) };
     }
 
