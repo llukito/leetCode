@@ -1,109 +1,78 @@
 class Solution {
 public:
-    string solveEquation(string equation) {
-        string curr = "";
-        int leftSum = 0, leftX = 0;
-        int index = -1;
-        // Parse left side
-        for (int i = 0; i < equation.length(); i++) {
-            char ch = equation[i];
-            if (ch == '+' || ch == '-' || ch == '=') {
-                if (!curr.empty()) {
-                    // x-term
-                    if (curr.find('x') != string::npos) {
-                        char sign = (curr[0] == '-') ? '-' : '+';
-                        string num = "";
-                        for (int j = (curr[0] == '+' || curr[0] == '-') ? 1 : 0; j < curr.size(); ++j) {
-                            if (curr[j] == 'x') break;
-                            num += curr[j];
-                        }
-                        int coeff = num.empty() ? 1 : stoi(num);
-                        leftX += (sign == '+') ? coeff : -coeff;
-                    }
-                    // constant term
-                    else {
-                        char sign = '+';
-                        if (curr[0] == '-') { sign = '-'; curr = curr.substr(1); }
-                        else if (curr[0] == '+') { curr = curr.substr(1); }
-                        if (!curr.empty()) {
-                            int val = stoi(curr);
-                            leftSum += (sign == '+') ? val : -val;
-                        }
-                    }
-                }
-                curr.clear();
-                if (ch == '=') { index = i + 1; break; }
-                curr += ch;
-            } else {
-                curr += ch;
-            }
-        }
+    string solveEquation(const string& equation) {
+        // 1. Split into left/right substrings
+        pair<string, string> sides = splitEquation(equation);
+        const string& left  = sides.first;
+        const string& right = sides.second;
 
-        int rightSum = 0, rightX = 0;
-        curr.clear();
-        // Parse right side
-        for (int i = index; i < equation.length(); i++) {
-            char ch = equation[i];
-            if (ch == '+' || ch == '-') {
-                if (!curr.empty()) {
-                    if (curr.find('x') != string::npos) {
-                        char sign = (curr[0] == '-') ? '-' : '+';
-                        string num = "";
-                        for (int j = (curr[0] == '+' || curr[0] == '-') ? 1 : 0; j < curr.size(); ++j) {
-                            if (curr[j] == 'x') break;
-                            num += curr[j];
-                        }
-                        int coeff = num.empty() ? 1 : stoi(num);
-                        rightX += (sign == '+') ? coeff : -coeff;
-                    } else {
-                        char sign = '+';
-                        if (curr[0] == '-') { sign = '-'; curr = curr.substr(1); }
-                        else if (curr[0] == '+') { curr = curr.substr(1); }
-                        if (!curr.empty()) {
-                            int val = stoi(curr);
-                            rightSum += (sign == '+') ? val : -val;
-                        }
-                    }
+        // 2. Parse each side to get (x-coefficient, constant sum)
+        pair<int,int> leftVals  = parseSide(left);
+        pair<int,int> rightVals = parseSide(right);
+
+        int leftX    = leftVals.first;
+        int leftSum  = leftVals.second;
+        int rightX   = rightVals.first;
+        int rightSum = rightVals.second;
+
+        // 3. Bring all x’s to LHS, constants to RHS
+        int coeffX   = leftX - rightX;
+        int constNum = rightSum - leftSum;
+
+        // 4. Solve
+        if (coeffX == 0) {
+            return (constNum == 0) ? "Infinite solutions"
+                                   : "No solution";
+        }
+        // integer division always exact in valid input
+        return "x=" + to_string(constNum / coeffX);
+    }
+
+private:
+    // Split "ax+b=cx+d" → {"ax+b", "cx+d"}
+    static pair<string, string> splitEquation(const string& eq) {
+        size_t pos = eq.find('=');
+        return { eq.substr(0, pos), eq.substr(pos + 1) };
+    }
+
+    // Parse a side like "+3x-2+4x+5" into {sum of x-coeff, sum of constants}
+    static pair<int,int> parseSide(const string& side) {
+        int sumX = 0, sumC = 0;
+        string term;
+        for (size_t i = 0; i <= side.size(); ++i) {
+            if (i == side.size() || side[i] == '+' || side[i] == '-') {
+                if (!term.empty()) {
+                    parseTerm(term, sumX, sumC);
+                    term.clear();
                 }
-                curr.clear();
-                curr += ch;
+                if (i < side.size()) {
+                    term.push_back(side[i]);  // start next term’s sign
+                }
             } else {
-                curr += ch;
+                term.push_back(side[i]);
             }
         }
-        // Last term on right
-        if (!curr.empty()) {
-            if (curr.find('x') != string::npos) {
-                char sign = (curr[0] == '-') ? '-' : '+';
-                string num = "";
-                for (int j = (curr[0] == '+' || curr[0] == '-') ? 1 : 0; j < curr.size(); ++j) {
-                    if (curr[j] == 'x') break;
-                    num += curr[j];
-                }
-                int coeff = num.empty() ? 1 : stoi(num);
-                rightX += (sign == '+') ? coeff : -coeff;
-            } else {
-                char sign = '+';
-                if (curr[0] == '-') { sign = '-'; curr = curr.substr(1); }
-                else if (curr[0] == '+') { curr = curr.substr(1); }
-                if (!curr.empty()) {
-                    int val = stoi(curr);
-                    rightSum += (sign == '+') ? val : -val;
-                }
-            }
+        return { sumX, sumC };
+    }
+
+    // Parses one term ("-2", "+3x", "x", "-x") and updates accumulators.
+    static void parseTerm(const string& term, int& sumX, int& sumC) {
+        bool isX = (term.find('x') != string::npos);
+        int sign = (term[0] == '-') ? -1 : +1;
+        // start reading digits after optional '+'/'-'
+        size_t i = (term[0] == '+' || term[0] == '-') ? 1 : 0;
+
+        // extract numeric part (might be empty for "x" or "-x")
+        string numStr;
+        while (i < term.size() && isdigit(term[i])) {
+            numStr.push_back(term[i++]);
         }
-        int x = leftX - rightX;
-        int num = rightSum - leftSum;
-        if(x == 0){
-            if(num == 0){
-                return "Infinite solutions";
-            } else {
-                return "No solution";
-            }
+        int val = numStr.empty() ? 1 : stoi(numStr);
+
+        if (isX) {
+            sumX += sign * val;
+        } else {
+            sumC += sign * val;
         }
-        int res = num/x;
-        string rr = "x=";
-        rr+=to_string(res);
-        return rr;
     }
 };
