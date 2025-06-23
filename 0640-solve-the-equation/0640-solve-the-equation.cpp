@@ -1,7 +1,7 @@
 class Solution {
 public:
-    string solveEquation(const string& equation) {
-        // 1. Split into left/right substrings
+    string solveEquation(string equation) {
+        // we first split into left and right substrings
         pair<string, string> sides = splitEquation(equation);
         const string& left  = sides.first;
         const string& right = sides.second;
@@ -21,8 +21,7 @@ public:
 
         // 4. Solve
         if (coeffX == 0) {
-            return (constNum == 0) ? "Infinite solutions"
-                                   : "No solution";
+            return (constNum == 0) ? "Infinite solutions" : "No solution";
         }
         // integer division always exact in valid input
         return "x=" + to_string(constNum / coeffX);
