@@ -6,7 +6,7 @@ public:
         for (auto& f : flights)
             graph[f[0]].emplace_back(f[1], f[2]);
 
-        vector<vector<int>> dist(n, vector<int>(k + 3, INT_MAX));
+        vector<vector<int>> dist(n, vector<int>(k + 1, INT_MAX));
         priority_queue<tuple<int, int, int>, vector<tuple<int, int, int>>, greater<>> pq;
         pq.emplace(0, src, 0);
         dist[src][0] = 0;
