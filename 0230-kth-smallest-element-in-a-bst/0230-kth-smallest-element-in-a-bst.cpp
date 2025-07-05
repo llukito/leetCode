@@ -12,24 +12,24 @@
 class Solution {
 public:
     int kthSmallest(TreeNode* root, int k) {
-        multiset<int> vect;
-        fill(vect, root);
-        int lvl = 1;
-        for(int n : vect){
-            if(lvl == k){
-                return n;
-            }
-            lvl++;
-        }
-        return -1; // will never get here
+        int res = -1;
+        check(root, k, res);
+        return res;
     }
 
-    void fill(multiset<int>& vect, TreeNode* root){
-        if(!root){
+    void check(TreeNode* root, int& k, int& res){
+        if(res != -1)return;
+        if(!root)return;
+        if(k==0){
+            res = root->val;
             return;
         }
-        vect.insert(root->val);
-        fill(vect, root->left);
-        fill(vect, root->right);
+        check(root->left, k, res);
+        k--;
+        if(k==0){
+            res = root->val;
+            return;
+        }
+        check(root->right, k, res);
     }
 };
