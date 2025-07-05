@@ -1,4 +1,4 @@
-<h2><a href="https://leetcode.com/problems/snakes-and-ladders">909. Snakes and Ladders</a></h2><h3>Medium</h3><hr><p>You are given an <code>n x n</code> integer matrix <code>board</code> where the cells are labeled from <code>1</code> to <code>n<sup>2</sup></code> in a <a href="https://en.wikipedia.org/wiki/Boustrophedon" target="_blank"><strong>Boustrophedon style</strong></a> starting from the bottom left of the board (i.e. <code>board[n - 1][0]</code>) and alternating direction each row.</p>
+<h2><a href="https://leetcode.com/problems/snakes-and-ladders/">909. Snakes and Ladders</a></h2><h3>Medium</h3><hr><p>You are given an <code>n x n</code> integer matrix <code>board</code> where the cells are labeled from <code>1</code> to <code>n<sup>2</sup></code> in a <a href="https://en.wikipedia.org/wiki/Boustrophedon" target="_blank"><strong>Boustrophedon style</strong></a> starting from the bottom left of the board (i.e. <code>board[n - 1][0]</code>) and alternating direction each row.</p>
 
 <p>You start on square <code>1</code> of the board. In each move, starting from square <code>curr</code>, do the following:</p>
 
