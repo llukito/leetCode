@@ -2,24 +2,24 @@ class Solution {
 public:
     int findCheapestPrice(int n, vector<vector<int>>& flights, int src, int dst, int k) {
         k++;
-        priority_queue<pair<int, pair<int,int>>, vector<pair<int, pair<int,int>>>, greater<pair<int, pair<int,int>>>> pq;
-        pq.push({0, {src, 0}});
-        unordered_map<int, unordered_map<int,int>> dist;
+        vector<vector<pair<int, int>>> graph(n);
+        for (auto& f : flights)
+            graph[f[0]].emplace_back(f[1], f[2]);
+
+        vector<vector<int>> dist(n, vector<int>(k + 2, INT_MAX));
+        priority_queue<tuple<int, int, int>, vector<tuple<int, int, int>>, greater<>> pq;
+        pq.emplace(0, src, 0);
         dist[src][0] = 0;
-        while(!pq.empty()){
-            int node = pq.top().second.first; int len = pq.top().first; int total = pq.top().second.second; pq.pop();
-            if(total >k)continue;
-            if(dist.count(node) && dist[node].count(total) && dist[node][total] < len)continue;
-            dist[node][total] = len;
-            if(node == dst)return len;
-            for(auto& vect : flights){
-                int from = vect[0]; int to = vect[1]; int cost = vect[2];
-                if(from == node){
-                    if(!dist.count(vect[1]) || !dist[vect[1]].count(total+1)){
-                        pq.push({len + vect[2], {vect[1], total + 1}});
-                    } else if(dist[vect[1]][total+1] > len+vect[2]){
-                        pq.push({len + vect[2], {vect[1], total + 1}});
-                    }
+
+        while (!pq.empty()) {
+            auto [cost, node, stops] = pq.top(); pq.pop();
+            if (node == dst) return cost;
+            if (stops == k) continue;
+
+            for (auto& [nei, price] : graph[node]) {
+                if (dist[nei][stops + 1] > cost + price) {
+                    dist[nei][stops + 1] = cost + price;
+                    pq.emplace(cost + price, nei, stops + 1);
                 }
             }
         }
