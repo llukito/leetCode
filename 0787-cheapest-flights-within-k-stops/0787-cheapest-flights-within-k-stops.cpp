@@ -1,47 +1,28 @@
 class Solution {
 public:
     int findCheapestPrice(int n, vector<vector<int>>& flights, int src, int dst, int k) {
-        // Priority queue for (cost, city, stops_left) where cost is the current cost, city is the current city, and stops_left is the remaining number of stops
-        priority_queue<tuple<int, int, int>, vector<tuple<int, int, int>>, greater<>> q;
-        q.push(make_tuple(0, src, k)); // Initial state: cost = 0, src city, k stops left
-        
-        // dp[city][stops_left] = minimum cost to reach `city` with `stops_left` remaining stops
-        unordered_map<int, unordered_map<int, int>> dp;
-        
-        // Add initial state to dp (src, k)
-        dp[src][k] = 0;
-        
-        while (!q.empty()) {
-            tuple<int, int, int> t = q.top(); q.pop();
-            int city = get<1>(t);
-            int cost = get<0>(t);
-            int stops_left = get<2>(t);
-            
-            // If we reach the destination, return the cost
-            if (city == dst) {
-                return cost;
-            }
-            
-            // If there are still stops remaining, explore the next cities
-            if (stops_left >= 0) {
-                for (const auto& flight : flights) {
-                    int from = flight[0], to = flight[1], price = flight[2];
-                    
-                    // If we're at the `from` city, check if moving to `to` city with 1 fewer stop is cheaper
-                    if (from == city) {
-                        int new_cost = cost + price;
-                        
-                        // If this new path to `to` city with `stops_left - 1` stops is cheaper, update and push to the queue
-                        if (dp[to].find(stops_left - 1) == dp[to].end() || dp[to][stops_left - 1] > new_cost) {
-                            dp[to][stops_left - 1] = new_cost;
-                            q.push(make_tuple(new_cost, to, stops_left - 1));
-                        }
+        k++;
+        priority_queue<pair<int, pair<int,int>>, vector<pair<int, pair<int,int>>>, greater<pair<int, pair<int,int>>>> pq;
+        pq.push({0, {src, 0}});
+        unordered_map<int, unordered_map<int,int>> dist;
+        dist[src][0] = 0;
+        while(!pq.empty()){
+            int node = pq.top().second.first; int len = pq.top().first; int total = pq.top().second.second; pq.pop();
+            if(total >k)continue;
+            if(dist.count(node) && dist[node].count(total) && dist[node][total] < len)continue;
+            dist[node][total] = len;
+            if(node == dst)return len;
+            for(auto& vect : flights){
+                int from = vect[0]; int to = vect[1]; int cost = vect[2];
+                if(from == node){
+                    if(!dist.count(vect[1]) || !dist[vect[1]].count(total+1)){
+                        pq.push({len + vect[2], {vect[1], total + 1}});
+                    } else if(dist[vect[1]][total+1] > len+vect[2]){
+                        pq.push({len + vect[2], {vect[1], total + 1}});
                     }
                 }
             }
         }
-        
-        // If no valid path is found, return -1
         return -1;
     }
 };
