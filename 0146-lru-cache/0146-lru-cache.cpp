@@ -52,10 +52,8 @@ public:
         } else {
             if(loglen == size){
                 Node* nd = head->next;
-                if(nd->next){
-                    head->next = nd->next;
-                    nd->next->prev = head;
-                }
+                head->next = nd->next;
+                nd->next->prev = head;
                 map.erase(nd->key);
                 delete nd;
                 loglen--;
