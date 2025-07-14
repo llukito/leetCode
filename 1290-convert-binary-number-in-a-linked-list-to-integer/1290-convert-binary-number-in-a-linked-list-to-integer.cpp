@@ -12,21 +12,21 @@ class Solution {
 public:
     int getDecimalValue(ListNode* head) {
         int size = getSize(head);
+        size--;
         int res = 0;
         while(head){
-            res+=head->val*pow(2, size-1);
+            res+= head->val * (pow(2,size--));
             head = head->next;
-            size--;
         }
         return res;
     }
 
     int getSize(ListNode* head){
-        int b = 0;
+        int sum = 0;
         while(head){
-            b++;
+            sum++;
             head = head->next;
         }
-        return b;
+        return sum;
     }
 };
