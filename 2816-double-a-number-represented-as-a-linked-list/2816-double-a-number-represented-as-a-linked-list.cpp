@@ -11,33 +11,35 @@
 class Solution {
 public:
     ListNode* doubleIt(ListNode* head) {
-        ListNode* temp = head;
-        while(temp){
-            temp->val*=2;
-            temp = temp->next;
+        head = reverse(head);
+        int carry = 0;
+        ListNode* root = head;
+        while(root){
+            int val = root->val*2 + carry;
+            int nextVal = val%10;
+            int currVal = (val-nextVal)/10;
+            root->val = nextVal;
+            carry = currVal;
+            root = root->next;
         }
-        temp = head;
-        stack<ListNode*> st;
-        while (temp) {
-            st.push(temp);
-            temp = temp->next;
-        }
-        while(!st.empty()){
-            ListNode* nd = st.top(); st.pop();
-            int n = nd->val%10;
-            int m = (nd->val - n)/10;
-            nd->val = n;
-            if(!st.empty()){
-                st.top()->val +=m;
-            } else {
-                if(m!=0){
-                    nd->val = n;
-                    ListNode* nd = new ListNode(m);
-                    nd->next = head;
-                    head = nd;
-                }
-            }
+        head = reverse(head);
+        if(carry != 0){
+            ListNode* addable = new ListNode();
+            addable->val = carry;
+            addable->next = head;
+            head = addable;
         }
         return head;
+    }
+    
+    ListNode* reverse(ListNode* head){
+        ListNode* prev = nullptr;
+        while(head){
+            ListNode* temp = head->next;
+            head->next = prev;
+            prev = head;
+            head  = temp;
+        }
+        return prev;
     }
 };
