@@ -4,7 +4,7 @@ public:
     vector<string> generateParenthesis(int n) {
         vector<string> res;
         string curr;
-        fill(res, 2 * n, curr);
+        fill(res, 2*n, curr);
         return res;
     }
 
