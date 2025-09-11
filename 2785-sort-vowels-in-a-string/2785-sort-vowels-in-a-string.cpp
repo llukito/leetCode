@@ -1,23 +1,30 @@
 class Solution {
 public:
     string sortVowels(string s) {
-        vector<char> vowels;
-        for(char c : s){
-            char ch = c;
-            ch = tolower(ch);
-            if(ch=='a' || ch=='e' || ch=='i' || ch=='o' || ch=='u'){
-                vowels.push_back(c);
+        string res  ="";
+        string vowels = "";
+        for(char ch : s){
+            if(isVowel(ch)){
+                res+="-";
+                vowels+=ch;
+            } else {
+                res+=ch;
             }
         }
         sort(vowels.begin(), vowels.end());
-        int index = 0;
-        for(int i=0; i<s.length(); i++){
-            char ch = s[i];
-            ch = tolower(ch);
-            if(ch=='a' || ch=='e' || ch=='i' || ch=='o' || ch=='u'){
-                s[i]=vowels[index++];
+        int idx = 0;
+        for(int i=0; i<res.length(); i++){
+            char ch = res[i];
+            if(ch == '-'){
+                res[i] = vowels[idx++];
             }
         }
-        return s;
+        return res;
+    }
+
+    bool isVowel(char c){
+        char ch = tolower(c);
+        unordered_set<char> s {'a', 'e', 'i', 'o', 'u'};
+        return s.count(ch);
     }
 };
