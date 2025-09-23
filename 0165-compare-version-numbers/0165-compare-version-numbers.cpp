@@ -1,36 +1,65 @@
 class Solution {
 public:
     int compareVersion(string version1, string version2) {
-        vector<int> vect1;
-        vector<int> vect2;
-        stringstream ss(version1);
-        string token;
-        while(getline(ss,token,'.')){
-            vect1.push_back(stoi(token));
-        }
-        stringstream ss2(version2);
-        string token2;
-        while(getline(ss2,token2,'.')){
-            vect2.push_back(stoi(token2));
-        }   
-        if(vect1.size()>vect2.size()){
-            int num = vect1.size()-vect2.size();
-            for(int i=0; i<num; i++){
-                vect2.push_back(0);
+        string curr1, curr2;
+        bool b1 = false; bool b2 = false;
+        int left = 0;
+        int left2 = 0;
+        while(true){
+            if(!b1){
+                if(version1[left] == '.' || left>=version1.size()){
+                    b1 = true;
+                } else {
+                    curr1+=version1[left];
+                }
+                left++;
             }
-        } else if(vect1.size()<vect2.size()){
-            int num = vect2.size()-vect1.size();
-            for(int i=0; i<num; i++){
-                vect1.push_back(0);
+            if(!b2){
+                if(version2[left2] == '.' || left2>=version2.size()){
+                    b2 = true;
+                }else {
+                    curr2+=version2[left2];
+                }
+                left2++;
             }
-        }
+            if(b1 && b2){
+                if (curr1.empty()) curr1 = "0";
+                if (curr2.empty()) curr2 = "0";
 
-        for(int i=0; i<vect1.size(); i++){
-            if(vect1[i]<vect2[i]){
-                return -1;
-            } else if(vect1[i]>vect2[i]){
-                return 1;
+                // strip leading zeros
+                while (curr1.size() > 1 && curr1[0] == '0') curr1.erase(curr1.begin());
+                while (curr2.size() > 1 && curr2[0] == '0') curr2.erase(curr2.begin());
+
+                // compare
+                if (curr1.size() > curr2.size()) return 1;
+                if (curr1.size() < curr2.size()) return -1;
+
+                if (curr1 > curr2) return 1;
+                if (curr1 < curr2) return -1;
+
+                curr1.clear(); curr2.clear();
+                b1 = b2 = false;
             }
+            if(left>=version1.size() && left2>=version2.size())break;
+            if(left>=version1.size()){
+                b1 = true;
+            }
+            if(left2>=version2.size()){
+                b2 = true;
+            }
+        }
+        if(!curr1.empty() || !curr2.empty()){
+            if (curr1.empty()) curr1 = "0";
+            if (curr2.empty()) curr2 = "0";
+
+            while (curr1.size() > 1 && curr1[0] == '0') curr1.erase(curr1.begin());
+            while (curr2.size() > 1 && curr2[0] == '0') curr2.erase(curr2.begin());
+
+            if (curr1.size() > curr2.size()) return 1;
+            if (curr1.size() < curr2.size()) return -1;
+
+            if (curr1 > curr2) return 1;
+            if (curr1 < curr2) return -1;
         }
         return 0;
     }
