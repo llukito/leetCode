@@ -1,25 +1,27 @@
 class Solution {
 public:
     int countPalindromicSubsequence(string s) {
-        unordered_map<char, pair<int,int>> map;
-        for(int i=0; i<s.length(); i++){
-            if(!map.count(s[i])){
-                map[s[i]].first = map[s[i]].second = i;
-                continue;
-            }
-            map[s[i]].first = max(map[s[i]].first, i);
-            map[s[i]].second = min(map[s[i]].second, i);
+        unordered_set<char> st;
+        vector<set<int>> indexes(26, set<int>{0});
+
+        vector<pair<int,int>> chars(26, {INT_MAX, INT_MIN});
+
+        for(int i = 0; i < s.size(); i++){
+            indexes[s[i]-'a'].insert(i);
+
+            chars[s[i]-'a'] =  {min(chars[s[i]-'a'].first, i), max(chars[s[i]-'a'].second, i)};
         }
-        unordered_set<string> se;
-        for(auto& entry : map){
-            if(entry.second.first - entry.second.second >=2){
-                for(int i=entry.second.second+1; i<entry.second.first; i++){
-                    string str = "";
-                    str+=entry.first; str+=s[i]; str+=entry.first;
-                    se.insert(str);
+        int res = 0;
+        for(auto& entry : chars){
+            if(entry.first != entry.second){
+                for(int i = 0; i < 26; i++){
+                    auto it = indexes[i].upper_bound(entry.first);
+                    if(it  == indexes[i].end())continue;
+                    if(*it >= entry.second)continue;
+                    res++;
                 }
             }
         }
-        return se.size();
+        return res;
     }
 };
