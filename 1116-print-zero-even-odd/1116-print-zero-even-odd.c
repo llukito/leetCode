@@ -27,7 +27,7 @@ void zero(ZeroEvenOdd* obj) {
     for(int i = 0; i<obj->n; i++){
         sem_wait(&obj->zero);
         printNumber(0);
-        pthread_mutex_lock(&obj->lock);
+        //pthread_mutex_lock(&obj->lock);
         if(obj->alt){
             sem_post(&obj->odd);
             obj->alt = false;
@@ -35,7 +35,7 @@ void zero(ZeroEvenOdd* obj) {
             sem_post(&obj->even);
             obj->alt = true;
         }
-        pthread_mutex_unlock(&obj->lock);
+        //pthread_mutex_unlock(&obj->lock);
     }
 }
 
