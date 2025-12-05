@@ -14,7 +14,7 @@ class Solution {
             x/=10;
         }
         if(newNumber >  Integer.MAX_VALUE)return 0;
-        newNumber*=sign;
+        newNumber *= sign;
         return (int)newNumber;
     }
 }
