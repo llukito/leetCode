@@ -4,7 +4,7 @@ class Solution {
         int sign = 1;
         if(x < 0){
             sign = -1;
-            x*=-1;
+            x *= -1;
         }
         double newNumber = 0;
         while(x!=0){
