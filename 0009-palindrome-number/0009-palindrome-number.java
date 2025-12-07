@@ -6,7 +6,7 @@ class Solution {
             int n = x%10;
             newNumber*=10; 
             newNumber+=n;
-            x/=10;
+            x /= 10;
         }
         return savedX == newNumber;
     }
