@@ -9,7 +9,7 @@ public:
     }
 
     void fill(vector<string>& res, int m, string& curr) {
-        if (m == 0) {
+        if (m==0) {
             if (valid(curr)) {
                 res.push_back(curr);
             }
