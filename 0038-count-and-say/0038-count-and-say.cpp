@@ -1,7 +1,7 @@
 class Solution {
 public:
     string countAndSay(int n) {
-        string s = "1";
+        string s ="1";
         for(int i=1; i<n; i++){
             cout<<s;
             string temp="";
