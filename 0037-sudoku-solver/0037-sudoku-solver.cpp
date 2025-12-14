@@ -7,7 +7,7 @@ public:
                 if(board[r][c] == '.')todo++;
             }
         }
-        check(board, todo);
+        check(board,  todo);
     }
 
     bool check(vector<vector<char>>& board,int todo){
