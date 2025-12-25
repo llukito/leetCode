@@ -7,7 +7,7 @@ public:
 
     long long check(vector<int>& nums,int idx, unordered_map<int,long long>& map){
         if(idx == nums.size()-1){
-            return 0;
+            return 0 ;
         }
         if(map.count(idx)){
             return map[idx];
