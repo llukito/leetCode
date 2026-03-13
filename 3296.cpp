@@ -9,7 +9,7 @@ public:
         while(mountainHeight != 0){
             auto [cost, inner] = pq.top(); pq.pop();
             auto [turn, dec] = inner;
-            mountainHeight-=1;
+            mountainHeight-= 1;
             res = cost;
             if(mountainHeight <= 0)break;
             pq.push({cost + 1ll*turn*(dec + 1), {turn, dec+1}});
